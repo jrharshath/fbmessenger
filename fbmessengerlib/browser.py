@@ -28,34 +28,6 @@ class BrowserWindow:
     print("self._instances.append(self)")
     self._starturl = starturl
     self._view = QtWebKitWidgets.QWebView()
-    self._external = None
-    self._fade_animation_token = None
-    page = self._view.page()
-    self._frame = page.mainFrame()
-    zoom = float(settings.get_setting("Zoom", default=1))
-    self._frame.setZoomFactor(zoom)
-    page.linkClicked.connect(self._on_link_clicked)
-    print("page.linkClicked.connect(self._on_link_clicked)")
-    page.setLinkDelegationPolicy(QtWebKitWidgets.QWebPage.DelegateAllLinks)
-    event.subscribe(self.CLOSE_EVENT, self._on_close)
-    event.subscribe(self.WHEEL_EVENT, self._on_wheel)
-    manager = page.networkAccessManager()
-    manager.setCookieJar(_cookie_jar_singleton)
-    manager.sslErrors.connect(self._handle_ssl_error)
-    cache = QtNetwork.QNetworkDiskCache()
-    print("cache = QtNetwork.QNetworkDiskCache()")
-    cache.setCacheDirectory(
-        path.join(settings.SETTINGS_DIR, "cache"))
-    manager.setCache(cache)
-    websettings = page.settings()
-    print("websettings = page.settings()")
-    websettings.setAttribute(
-        QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
-    websettings.setAttribute(
-        QtWebKit.QWebSettings.LocalStorageEnabled, True)
-    websettings.setLocalStoragePath(
-        path.join(settings.SETTINGS_DIR, "localstorage"))
-    event.subscribe(settings.AUTH_CHANGED_EVENT, self.refresh)
     print("event.subscribe(settings.AUTH_CHANGED_EVENT, self.refresh)")
     print("self.refresh()")
     self.refresh()
@@ -65,6 +37,7 @@ class BrowserWindow:
     self._view.activateWindow()
 
   def bind_external(self, externalobj):
+    return
     if self._external:
       raise RuntimeError("External object already attached")
     self._external = externalobj
@@ -176,9 +149,6 @@ class BrowserWindow:
     self._view.setWindowTitle(title)
 
   def show(self):
-    if self._fade_animation_token:
-      self._fade_animation_token.stop()
-      self._fade_animation_token = None
     self._view.setWindowOpacity(1)
     self._view.show()
 
