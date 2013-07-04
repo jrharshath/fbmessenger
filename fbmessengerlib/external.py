@@ -1,7 +1,7 @@
 import webbrowser
 import json
 import inspect
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 from . import network
 from . import settings
@@ -44,9 +44,8 @@ def fake_external_decorator(*types, **results):
   return decorator
 
 def init():
+  print("init external")
   windows.main_window.bind_external(External(windows.main_window))
-  windows.chat_window.bind_external(External(windows.chat_window))
-  windows.toast_window.bind_external(External(windows.toast_window))
 
   ### main window JS events
   def main_window_moved_or_resized():
@@ -66,7 +65,6 @@ def init():
   ### chat window js events
   def chat_window_activated():
     arbiter_inform_all("FbdChat.chatWindowActivated", None)
-  event.subscribe(windows.chat_window.ACTIVATE_EVENT, chat_window_activated)
 
   ### mqtt events
   def mqtt_message_received(topic, payload):
@@ -98,7 +96,7 @@ class External(QtCore.QObject):
     # because in some implementations, JS isn't capable of passing out
     # arbitrary objects.
 
-    # PyQt4 seems to have a weird bug where, when the JS string passed in
+    # PyQt5 seems to have a weird bug where, when the JS string passed in
     # contains surrogate pairs (unicode chars that don't fit in a wchar, like
     # these: "𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"), those pairs are parsed correctly into single Python
     # characters, but an extra '\x00' character is appended to the end of the
@@ -188,7 +186,7 @@ class External(QtCore.QObject):
 
   @external_decorator(result=bool)
   def isToastVisible(self):
-    return windows.toast_window.is_visible()
+    pass
 
   @external_decorator(str, str)
   def logEvent(self, name, payload):
@@ -313,11 +311,11 @@ class External(QtCore.QObject):
 
   @external_decorator()
   def hideChatWindow(self):
-    windows.chat_window.hide()
+    pass
 
   @external_decorator(result=bool)
   def isChatWindowActive(self):
-    return windows.chat_window.is_active()
+    pass
 
   @external_decorator()
   def playIncomingMessageSound(self):
@@ -329,17 +327,17 @@ class External(QtCore.QObject):
 
   @external_decorator(str)
   def setChatWindowTitle(self, title):
-    windows.chat_window.set_title(title)
+    pass
 
   @external_decorator(bool)
   def showChatWindow(self, bringtofront):
-    windows.show_chat_window()
+    pass
     if bringtofront:
-      windows.chat_window.activate()
+      pass
 
   @external_decorator(int)
   def setToastHeight(self, height):
-    windows.toast_window.set_size(windows.TOAST_WIDTH, height)
+    pass
 
   @external_decorator()
   def showToast(self):
@@ -347,12 +345,12 @@ class External(QtCore.QObject):
 
   @external_decorator()
   def closeToast(self):
-    windows.toast_window.hide()
+    pass
 
   @external_decorator()
   def fadeToast(self):
     fade_ms = 2000
-    windows.toast_window.fade(fade_ms)
+    pass
 
   # The argument to showCustomToast is passed in as an actual JS object, rather
   # than being serialized. (This worked on Mac, and the function wasn't used on

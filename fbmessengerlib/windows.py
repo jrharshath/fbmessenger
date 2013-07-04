@@ -28,22 +28,6 @@ def init():
   event.subscribe(main_window.CLOSE_EVENT, application.quit)
   show_main_window()
 
-  global chat_window
-  chat_window = browser.BrowserWindow(base_url + "/desktop/client/chat.php")
-  chat_window.set_size(420, 340)
-  def chat_window_moved():
-    global _chat_rectangle
-    _chat_rectangle = chat_window.get_rectangle()
-  event.subscribe(chat_window.MOVE_EVENT, chat_window_moved)
-  event.subscribe(chat_window.RESIZE_EVENT, chat_window_moved)
-
-  global toast_window
-  toast_window = browser.BrowserWindow(base_url + "/desktop/client/toast.php")
-  toast_window.style_toast()
-  # height of one toast -- this will be overridden but just in case
-  toast_window.set_size(TOAST_WIDTH, 72)
-  event.subscribe(settings.AUTH_CHANGED_EVENT, toast_window.hide)
-
 # The main window's position is saved whenever it is moved or resized, so we
 # restore it when the window is created.
 def show_main_window():

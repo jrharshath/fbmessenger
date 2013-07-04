@@ -1,4 +1,4 @@
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 import threading
 
 def main_thread_only(func):
@@ -56,6 +56,7 @@ class StopToken():
 class ThreadMarshaller(QtCore.QObject):
   runonmainthreadsignal = QtCore.pyqtSignal(object, object, int, bool)
 
+print("init event")
 _marshall = ThreadMarshaller()
 _marshall.runonmainthreadsignal.connect(
     _run_on_main_thread_UIT, QtCore.Qt.QueuedConnection)
